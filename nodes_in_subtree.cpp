@@ -31,20 +31,19 @@ struct Query {
 
 // Add any helper functions you may need here
 Node* findNode(Node* node, int idx) {
-  if (!node) {
+  if (node && node->val == idx) {
     return node;
   }
 
-  if (node->val == idx) {
-    return node;
-  }
-
+  Node* found_node = nullptr;
   for (const auto& child : node->children) {
-    auto found_node = findNode(child, idx);
+    found_node = findNode(child, idx);
     if (found_node) {
-      return node;
+      break;
     }
   }
+
+  return found_node;
 }
 
 void countNodesInSubtree(Node* node, char ch, std::string s, int& count) {
@@ -80,7 +79,24 @@ vector<int> countOfNodes(Node* root, vector<Query> queries, string s) {
   return outputs;
 }
 
+/*
+  query: 2 'b'
+  subroot: 'b' with children 'a' and 'c'
 
+  ? 'b' none: no
+  does 'b' has 'b': yes
+  count: 1
+
+  for each child:
+
+  'a'
+  ! 'a' does not have 'b'
+  children are none: exit
+
+
+  'c'
+  similar path
+*/
 
 
 /*
@@ -144,7 +160,11 @@ vector<int> countOfNodes(Node* root, vector<Query> queries, string s) {
     root_2->children[1]->children.push_back(new Node(6));  
     vector<Query> queries_2{{1,'a'}, {2, 'b'}, {3, 'a'}};
 
-    findNode: 1
+    findNode: Node.val = b
+    b
+    children: a c
+
+
 
 
 */
@@ -212,7 +232,7 @@ int main() {
   
   // Testcase 2
   int n_2 = 7, q_2 = 3;
-  string s_2 = "abaacab"; // 1  2 3 7  4 5 6
+  string s_2 = "abaacab"; // 1  2 3 7  4 5 6  a  bab aca
   Node *root_2 = new Node(1); 
   root_2->children.push_back(new Node(2)); 
   root_2->children.push_back(new Node(3)); 
